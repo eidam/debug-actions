@@ -1,0 +1,41 @@
+name: test
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '*/5 * * * *'
+jobs:
+  terraform: # https://github.com/hashicorp/learn-terraform-github-actions/blob/main/.github/workflows/terraform.yml
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Terraform backend credentials
+        run: |
+          echo "TF_HTTP_USERNAME=jwt" >> $GITHUB_ENV
+          echo "TF_HTTP_PASSWORD=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r '.value')" >> $GITHUB_ENV
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        id: init
+        run: |
+          terraform init
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+        continue-on-error: true
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: |
+          terraform apply -auto-approve
