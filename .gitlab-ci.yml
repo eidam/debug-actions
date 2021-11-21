@@ -13,7 +13,7 @@ stages:
   - deploy
 
 variables:
-  TF_HTTP_USERNAME: jwk
+  TF_HTTP_USERNAME: jwt
   TF_HTTP_PASSWORD: $CI_JOB_JWT
 
 init:
