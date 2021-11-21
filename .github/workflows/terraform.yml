@@ -17,6 +17,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      # ACTIONS_ID_TOKEN_REQUEST_URL and ACTIONS_ID_TOKEN_REQUEST_TOKEN are set automatically by GitHub Actions when `id-token` is allowed (see permissions)
+      # id-token can be verified with GitHub OpenID Identity Provider, more info below
+      # https://docs.github.com/en/enterprise-cloud@latest/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers
       - name: Set Terraform backend credentials
         run: |
           echo "TF_HTTP_USERNAME=jwt" >> $GITHUB_ENV
