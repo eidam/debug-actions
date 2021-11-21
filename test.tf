@@ -9,7 +9,7 @@ terraform {
 
 // yooooooo
 resource null_resource test {
-  count = 500
+  count = 542
   triggers = {
       uuid = uuid()
   }
