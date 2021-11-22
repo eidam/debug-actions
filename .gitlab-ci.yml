@@ -29,5 +29,6 @@ build:
 
 deploy:
   extends: .deploy
+  when: always
   dependencies:
     - build
